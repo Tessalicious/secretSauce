@@ -1,6 +1,7 @@
 install these first
 
 npm install request
+
 npm i @binance-chain/javascript-sdk
 
 
