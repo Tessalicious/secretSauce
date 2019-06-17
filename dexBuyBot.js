@@ -53,13 +53,13 @@ function trade() {
 }
 
 function placeBuyOrder() {
-    bnbClient.placeOrder(args[2], bnbDexMarkets.get(args[3]) + '_BNB', 1, args[4], args[5]).then(result => {
+    bnbClient.placeOrder(args[2], 'RAVEN-F66_BNB', 1, args[4], args[5]).then(result => {
         setTimeout(sellOrder,1100);
         console.log(result);
     });
 }
 
 function sellOrder(){
-    bnbClient.placeOrder(args[2], bnbDexMarkets.get(args[3]) + '_BNB', 2, args[6], args[5]).then(result => console.log(result));
+    bnbClient.placeOrder(args[2], 'RAVEN-F66_BNB', 2, args[6], args[5]).then(result => console.log(result));
     setTimeout(sellOrder,1000);
 }
