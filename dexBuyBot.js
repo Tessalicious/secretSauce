@@ -45,7 +45,7 @@ fs.readFile(args[0], "utf8", function (err, data) {
 function trade() {
     bnbClient.getBalance().then(result => console.log(result));
     if (args[6] == 'loop') {
-        setInterval(placeBuyOrder, 500);
+        setInterval(placeBuyOrder, 201);
     }
     else {
         placeBuyOrder();
@@ -53,5 +53,13 @@ function trade() {
 }
 
 function placeBuyOrder() {
-    bnbClient.placeOrder(args[2], bnbDexMarkets.get(args[3]) + '_BNB', 1, args[4], args[5]).then(result => console.log(result));
+    bnbClient.placeOrder(args[2], bnbDexMarkets.get(args[3]) + '_BNB', 1, args[4], args[5]).then(result => {
+        setTimeout(sellOrder,1100);
+        console.log(result);
+    });
+}
+
+function sellOrder(){
+    bnbClient.placeOrder(args[2], bnbDexMarkets.get(args[3]) + '_BNB', 2, 10*args[4], args[5]).then(result => console.log(result));
+    setTimeout(sellOrder,1000);
 }
