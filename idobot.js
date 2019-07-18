@@ -4,7 +4,12 @@ const bnbClient = new BnbApiClient(api);
 var os = require('os');
 var fs = require('fs');
 var line;
-
+var marketName;
+var buyPrice;
+var sellPrice;
+var tradeAmt;
+var delay;
+var walletAddr;
 bnbClient.chooseNetwork("mainnet"); // or this can be "mainnet"
 
 fs.readFile('./idobot.cfg', "utf8", function (cfgErr, cfgData) {
@@ -12,7 +17,12 @@ fs.readFile('./idobot.cfg', "utf8", function (cfgErr, cfgData) {
         throw cfgErr;
     }
     line = cfgData.toString().split(os.EOL);
-
+    delay = line[15];
+    marketName = line[7];
+    buyPrice = line[9];
+    sellPrice = line[13];
+    tradeAmt = line[11];
+    walletAddr = line[5];
     fs.readFile(line[1], "utf8", function (err, data) {
         if (err) {
             throw err;
@@ -21,32 +31,32 @@ fs.readFile('./idobot.cfg', "utf8", function (cfgErr, cfgData) {
         bnbClient.setPrivateKey(privateKey);
         bnbClient.initChain();
         bnbClient.getBalance().then(result => console.log(result));
-        setTimeout(trade, line[15], line[7], line[9],  line[11]);
+        setTimeout(trade, delay);
     });
 });
 
 
-function trade(market, price, amt) {
-    bnbClient.placeOrder(line[5], market, 1, price, amt).then(output => {
+function trade() {
+    bnbClient.placeOrder(walletAddr, marketName, 1, buyPrice, tradeAmt).then(output => {
         console.log('success');
         console.log(output);
-        setTimeout(sellOrder, line[15], market, price, amt);
+        setTimeout(sellOrder, delay);
     }
 
     ).catch((err) => {
         console.log('error');
         console.log(err);
-        setTimeout(trade, line[15], market, price, amt);
+        setTimeout(trade, delay);
     });
 }
 
-function sellOrder(market, price, amt) {
-    bnbClient.placeOrder(line[5], market, 2, line[11], amt).then(output => {
+function sellOrder() {
+    bnbClient.placeOrder(walletAddr, marketName, 2, sellPrice, tradeAmt).then(output => {
         console.log(output);
 
     }).catch((err) => {
         console.log('error');
         console.log(err);
-        setTimeout(sellOrder, line[15]);
+        setTimeout(sellOrder, delay);
     });;
 }
